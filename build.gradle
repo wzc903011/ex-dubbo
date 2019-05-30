@@ -1,0 +1,150 @@
+
+//gradle配置里每个block的顺序 受加载顺序约束
+buildscript {
+    ext {
+        springBootVersion = '2.1.5.RELEASE'
+        dependencyManagementPluginVersion = '0.6.1.RELEASE'
+    }
+
+    repositories {
+        mavenLocal()
+        maven { url "http://maven-pdd.corp.yiran.com/repository/maven-releases/" }
+        maven { url "http://maven-pdd.corp.yiran.com/repository/maven-snapshots/" }
+        maven { url "http://maven-pdd.corp.yiran.com/repository/maven-central/" }
+        maven { url "http://maven-pdd.corp.yiran.com/repository/releases/" }
+        maven { url 'https://repo.spring.io/milestone' }
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "io.spring.gradle:dependency-management-plugin:$dependencyManagementPluginVersion"
+    }
+}
+
+group = 'com.mingqi.local'
+version = '0.0.1-SNAPSHOT'
+
+ext {
+    //基础组件父依赖  bat\cee\cat\gorilla\iris\tiger\zebra\leo\dubbo
+    frameworkParentVersion = '1.2.0.RELEASE'
+    leoClientVersion = '1.2.0.RELEASE' // framework里没有1.2.0的leo
+    springBootVersion = '2.1.5.RELEASE'
+    log4jVersion = '2.11.0-p1.0.0'
+    junitVersion = '4.11'
+    springVersion = '5.1.7.RELEASE'
+//    catDubboFilterVersion = '1.0.8'  // framework里没有catDubboFilter
+    zookeeperVersion='3.4.10'
+    zebraVersion='3.2.6.RELEASE'   //Keychain要求升级到3.2.6，framework最新的是3.2.5
+    projectVersion='0.0.1-SNAPSHOT'
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    group = 'com.mingqi.local'
+    version = '0.0.1-SNAPSHOT'
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+
+    configurations {
+        all*.exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+        //移除其它包里的日志库包，避免冲突
+        all*.exclude group: "org.slf4j", module: "slf4j-log4j12"
+        all*.exclude group: "org.slf4j", module: "log4j-over-slf4j"
+        //引入columbus导致的日志库包冲突
+        all*.exclude group: "org.apache.logging.log4j", module: "log4j-slf4j-impl"
+        all*.exclude group: "log4j", module: "log4j"
+
+    }
+
+    repositories {
+        maven { url "http://st1-publish-1.prod.yiran.com:8081/repository/maven-public/"}
+        maven { url "http://maven-pdd.corp.yiran.com:8081/repository/maven-public/" }
+        //下载gradle的官方插件
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "com.pinduoduo.framework:framework-parent:$frameworkParentVersion"
+        }
+    }
+
+    dependencies {
+    }
+
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+project(":user-service") {
+
+    dependencies {
+        compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+        compile "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+        compile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+        compile "org.springframework:spring-tx:$springVersion"
+        compileOnly "org.projectlombok:lombok:1.18.8"
+        annotationProcessor 'org.projectlombok:lombok:1.18.8'
+        //cat
+        compile "com.yiran.arch.cat:cat-dubbo-filter"
+        compile "com.dianping.cat:cat-client"
+        //dubbo
+        compile "com.alibaba:dubbo"
+        //leo
+        compile "com.yiran.arch.leo:leo-client:$leoClientVersion"
+        //log4j
+        compile "org.apache.logging.log4j:log4j-core:$log4jVersion"
+        compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
+        compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
+        //zookeeper
+        compile "org.apache.zookeeper:zookeeper:$zookeeperVersion"
+    }
+}
+
+
+project(":user-web") {
+
+    dependencies {
+        compile project(":user-service")
+
+        compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+        compile "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+        compile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+        //implementation scope is current project
+        compileOnly "org.projectlombok:lombok:1.18.8"
+        annotationProcessor 'org.projectlombok:lombok:1.18.8'
+        implementation("com.google.guava:guava:22.0")
+        //dubbo
+        compile "com.alibaba:dubbo"
+        //log4j
+        compile "org.apache.logging.log4j:log4j-core:$log4jVersion"
+        compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
+        compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
+        //zookeeper
+        compile "org.apache.zookeeper:zookeeper:$zookeeperVersion"
+        //redis
+        compile "org.springframework.boot:spring-boot-starter-data-redis:2.1.5.RELEASE"
+        compile "org.springframework.boot:spring-boot-starter-redis:1.4.7.RELEASE"
+        //spring-boot-starter-data-redis对jedis有版本要求，有依赖冲突
+        compile "redis.clients:jedis:2.9.1"
+        //httpclient
+        compile "org.apache.httpcomponents:httpclient:4.5.6"
+        compile "commons-httpclient:commons-httpclient:3.1"
+    }
+}

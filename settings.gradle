@@ -1,0 +1,8 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+rootProject.name = 'experiment-dubbo'
+include 'user-service'
+include 'user-web'
