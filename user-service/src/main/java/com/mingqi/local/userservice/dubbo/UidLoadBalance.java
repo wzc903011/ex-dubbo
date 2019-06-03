@@ -2,12 +2,11 @@ package com.mingqi.local.userservice.dubbo;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.rpc.Invocation;
-import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.RpcContext;
+import com.alibaba.dubbo.rpc.*;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.alibaba.dubbo.rpc.support.RpcUtils;
 import com.mingqi.local.userservice.dto.UidQueryRequest;
+import org.assertj.core.util.Lists;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -33,10 +32,12 @@ public class UidLoadBalance extends AbstractLoadBalance {
         }
     });
 
+
     @Override
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
         String methodName = RpcUtils.getMethodName(invocation);
         String key = invokers.get(0).getUrl().getServiceKey() + "." + methodName;
+        //为了扩容、缩容后刷新虚拟节点
         int identityHashCode = System.identityHashCode(invokers);
         //method级别的selector
         ConsistentHashSelector<T> selector = (ConsistentHashSelector<T>) selectors.get(key);
@@ -62,7 +63,7 @@ public class UidLoadBalance extends AbstractLoadBalance {
             this.virtualInvokers = new TreeMap<>();
             this.identityHashCode = System.identityHashCode(invokers);
             URL url = invokers.get(0).getUrl();
-            //获取配置的节点数量，作用？
+            //获取配置的节点数量
             this.replicaNumber = url.getMethodParameter(methodName, "hash.nodes", 160);
             //定义UidQueryRequest是第几个参数  对象类型可以不用，应该接口就一个对象类型； 基础类型的参数可以设置
             String[] index = Constants.COMMA_SPLIT_PATTERN.split(url.getMethodParameter(methodName, "uid.arguments", "0"));
