@@ -3,15 +3,18 @@ package com.mingqi.local.userservice.remote;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mingqi.local.userservice.UserQueryRemoteService;
+import com.mingqi.local.userservice.dto.GroupUserInfo;
 import com.mingqi.local.userservice.dto.UidListQueryRequest;
 import com.mingqi.local.userservice.dto.UidQueryExtendRequest;
 import com.mingqi.local.userservice.dto.UidQueryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Service("userQueryRemoteService")
 public class UserQueryRemoteServiceImpl implements UserQueryRemoteService {
@@ -25,6 +28,7 @@ public class UserQueryRemoteServiceImpl implements UserQueryRemoteService {
         t.setStatus(Message.SUCCESS);
         t.complete();
         System.out.println(String.format("queryWithPrimitiveType with uid=%d, mallId=%d, serverport=%s", uid, mallId, getPort()));
+
         return "success";
     }
 

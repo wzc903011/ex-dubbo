@@ -114,6 +114,7 @@ project(":user-service") {
         compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
         //zookeeper
         compile "org.apache.zookeeper:zookeeper:$zookeeperVersion"
+        compile 'com.github.ben-manes.caffeine:caffeine:2.5.5'
     }
 }
 
