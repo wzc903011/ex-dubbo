@@ -7,7 +7,7 @@ import com.mingqi.local.userservice.dto.UidQueryRequest;
 public interface UserQueryRemoteService {
 
     /**
-     * 基础类型作为入参，第一个参数   success；  失败过，要确认一致性hash算法原理
+     * 基础类型作为入参，第一个参数   success；
      */
     String queryWithPrimitiveType(long uid, int mallId);
 
@@ -17,7 +17,7 @@ public interface UserQueryRemoteService {
     String queryWithPrimitiveType2(long mallId, int uid);
 
     /**
-     * UidQueryRequest  success ；    失败过，要确认一致性hash算法原理
+     * UidQueryRequest  success ；
      */
     String queryByUidRequest(UidQueryRequest request);
 

@@ -4,26 +4,36 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.*;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.ConsistentHashLoadBalance;
+import com.alibaba.dubbo.rpc.cluster.loadbalance.RandomLoadBalance;
 import com.alibaba.dubbo.rpc.support.RpcUtils;
 import com.mingqi.local.userservice.dto.UidQueryRequest;
+import com.yiran.arch.leo.util.LeoUtils;
 import org.assertj.core.util.Lists;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 参考  com.alibaba.dubbo.rpc.cluster.loadbalance.ConsistentHashLoadBalance
  * todo 问题：如何保证均匀==即==》预生成的virtualInvokers如何保证和请求的参数生成的key均匀；
  * 待学习：一致性hash算法里 node和真实结点的关系；  考虑缩容 扩容
  * 虚拟节点初始化：
- *     每个method都会初始化virtualInvokers，都是（replicaNumber/4）* 4个key
+ * 每个method都会初始化virtualInvokers，都是（replicaNumber/4）* 4个key
  */
 public class UidLoadBalance extends AbstractLoadBalance {
 
+    private static int DEFAULT_REPLICANUMBER = 10000;
+
+    private static RandomLoadBalance randomLoadBalance = new RandomLoadBalance();
+    private static AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+    private static ExecutorService exec = Executors.newFixedThreadPool(1);
+
     private final ConcurrentMap<String, ConsistentHashSelector<?>> selectors = new ConcurrentHashMap<String, ConsistentHashSelector<?>>();
+    //线程级别，由dubbo控制的消费者实例中的dubbo线程，所以线程数可控；
     private static final ThreadLocal<MessageDigest> LOCAL_MD5 = ThreadLocal.withInitial(() -> {
         try {
             return MessageDigest.getInstance("MD5");
@@ -32,20 +42,48 @@ public class UidLoadBalance extends AbstractLoadBalance {
         }
     });
 
-
+    @SuppressWarnings("unchecked")
     @Override
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
+        Boolean uidLbSwitch = LeoUtils.getBooleanProperty("cicero-api.loadbalance.uidconsistenthash.switch");
+
+        //uid路由开关，如遇到负载不均衡的情况，可以直接关闭，使用dubbo默认负载均衡
+        if (!uidLbSwitch) {
+            return randomLoadBalance.select(invokers, url, invocation);
+        }
         String methodName = RpcUtils.getMethodName(invocation);
         String key = invokers.get(0).getUrl().getServiceKey() + "." + methodName;
-        //为了扩容、缩容后刷新虚拟节点
+        //扩容、缩容后刷新虚拟节点
         int identityHashCode = System.identityHashCode(invokers);
         //method级别的selector
         ConsistentHashSelector<T> selector = (ConsistentHashSelector<T>) selectors.get(key);
         if (selector == null || selector.getIdentityHashCode() != identityHashCode) {
-            //初始化method的selector
+            //通过CAS控制consumer实例里某一个线程去完成初始化，其他线程走random逻辑（解决消费者实例中并发初始化耗时问题）
+//            if (atomicBoolean.compareAndSet(false, true)) {
+//                //异步初始化method的selector
+//                System.out.println("线程： " + Thread.currentThread().getName() + " 获得锁");
+//                exec.submit(new FutureTask<>(new Callable<Void>() {
+//                    @Override
+//                    public Void call() throws InterruptedException {
+//                        System.out.println("线程： " + Thread.currentThread().getName() + "-------》开始异步初始化虚拟节点");
+//                        long starttime = System.currentTimeMillis();
+//                        selectors.put(key, new ConsistentHashSelector<T>(invokers, methodName));
+//                        //重置锁 atomicBoolean
+//                        atomicBoolean.compareAndSet(true, false);
+//                        System.out.println("线程： " + Thread.currentThread().getName() + "-------》结束初始化, 耗时"+ (System.currentTimeMillis() - starttime));
+//                        return null;
+//                    }
+//                }));
+//                System.out.println("获得锁的线程： " + Thread.currentThread().getName() + "异步返回=====》 random");
+//                return randomLoadBalance.select(invokers, url, invocation);
+//            } else {
+//                System.out.println("未获得锁的线程返回 random");
+//                return randomLoadBalance.select(invokers, url, invocation);
+//            }
             selectors.put(key, new ConsistentHashSelector<T>(invokers, methodName));
             selector = (ConsistentHashSelector<T>) selectors.get(key);
         }
+        System.out.println("使用初始化完成的map");
         return selector.select(invocation);
     }
 
@@ -53,26 +91,21 @@ public class UidLoadBalance extends AbstractLoadBalance {
 
         private final TreeMap<Long, Invoker<T>> virtualInvokers;
 
-        private final int replicaNumber;
-
         private final int identityHashCode;
 
-        private final int[] argumentIndex;
+        private final int argumentIndex;
 
         public ConsistentHashSelector(List<Invoker<T>> invokers, String methodName) {
+            System.out.println("初始化1次 线程：" + Thread.currentThread().getName());
             this.virtualInvokers = new TreeMap<>();
             this.identityHashCode = System.identityHashCode(invokers);
             URL url = invokers.get(0).getUrl();
-            //获取配置的节点数量
-            this.replicaNumber = url.getMethodParameter(methodName, "hash.nodes", 160);
-            //定义UidQueryRequest是第几个参数  对象类型可以不用，应该接口就一个对象类型； 基础类型的参数可以设置
-            String[] index = Constants.COMMA_SPLIT_PATTERN.split(url.getMethodParameter(methodName, "uid.arguments", "0"));
-            //获取配置的参数使用，后面作为hashkey
-            argumentIndex = new int[index.length];
-            for (int i = 0; i < index.length; i++) {
-                argumentIndex[i] = Integer.parseInt(index[i]);
-            }
+            //通过配置得到含uid的参数索引
+            String index = url.getMethodParameter(methodName, "uid.argument", "0");
+            argumentIndex = Integer.parseInt(index);
             for (Invoker<T> invoker : invokers) {
+                // 虚拟节点数使用缺省值，避免误填，不支持自定义
+                int replicaNumber = DEFAULT_REPLICANUMBER;
                 for (int i = 0; i < replicaNumber / 4; i++) {
                     byte[] digest = md5(removeUnnecessaryParameters(
                             invoker.getUrl(), Constants.PID_KEY, Constants.TIMESTAMP_KEY) + i);
@@ -119,17 +152,16 @@ public class UidLoadBalance extends AbstractLoadBalance {
                 return hashKey;
             }
             StringBuilder buf = new StringBuilder();
-            for (int i : argumentIndex) {
-                if (i >= 0 && i < args.length) {
-                    Object o = args[i];
-                    //UidQueryRequest的子类，用uid做key;
-                    //不是UidQueryRequest的子类，用原参数做key
-                    if (UidQueryRequest.class.isAssignableFrom(args[i].getClass())) {
-                        UidQueryRequest request = (UidQueryRequest)o;
-                        o = request.getUid();
-                    }
-                    buf.append(o);
+
+            if (argumentIndex >= 0 && argumentIndex < args.length) {
+                Object o = args[argumentIndex];
+                //UidRequest，获取uid;
+                //不是UidRequest的子类，用原参数(即uid)
+                if (UidQueryRequest.class.isAssignableFrom(args[argumentIndex].getClass())) {
+                    UidQueryRequest request = (UidQueryRequest) o;
+                    o = request.getUid();
                 }
+                buf.append(o);
             }
             return buf.toString();
         }
@@ -162,6 +194,46 @@ public class UidLoadBalance extends AbstractLoadBalance {
             }
             md5.update(bytes);
             return md5.digest();
+        }
+    }
+
+    private static final ConcurrentMap<String, String> selectors_test = new ConcurrentHashMap<String, String>();
+
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService exec = Executors.newFixedThreadPool(100);
+        for (int i = 0; i < 1000; i++) {
+            Thread.sleep(10);
+            if (i % 200 == 0 && i != 0) {
+                selectors_test.clear();
+            }
+            exec.submit(new FutureTask<Void>(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    test();
+                    return null;
+                }
+            }));
+        }
+        exec.shutdown();
+    }
+
+    private static void test() throws InterruptedException {
+        boolean condition = selectors_test.get("testKey") == null;
+
+        if (condition) {
+            if (atomicBoolean.compareAndSet(false, true)) {
+                Thread t = Thread.currentThread();
+                System.out.println("new:---------------------" + t.getName());
+                t.sleep(1000);
+                selectors_test.put("testKey", "value");
+                System.out.println("new: =============> done" + t.getName());
+                atomicBoolean.compareAndSet(true, false);
+            } else {
+                Thread t = Thread.currentThread();
+                System.out.println("old " + t.getName());
+            }
+        } else {
+            System.out.println("get result");
         }
     }
 }

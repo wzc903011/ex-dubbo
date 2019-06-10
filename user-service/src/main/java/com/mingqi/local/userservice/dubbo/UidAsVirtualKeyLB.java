@@ -1,8 +1,15 @@
 package com.mingqi.local.userservice.dubbo;
 
+import com.alibaba.dubbo.rpc.cluster.loadbalance.RandomLoadBalance;
+import org.assertj.core.util.Lists;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 /**
  * 模拟就一个方法，测试平衡性;
@@ -52,6 +59,7 @@ public class UidAsVirtualKeyLB {
     }
 
     private static void initVirtualNodes() {
+        Long startTime = System.currentTimeMillis();
         for (String realGroup : realGroups) {
             for (int i = 0; i < virtualNodeCount / 4; i++) {
                 byte[] digest = md5(realGroup + i);
@@ -61,6 +69,7 @@ public class UidAsVirtualKeyLB {
                 }
             }
         }
+        System.out.println("init cost=" + (System.currentTimeMillis() - startTime));
     }
 
     public static String select(Long uid) {
@@ -128,14 +137,30 @@ public class UidAsVirtualKeyLB {
     }
 
     public static void main(String[] args) {
-        testBalance();
-        System.out.println("start remove test");
-        realGroups.remove("192.168.0.1:111");
-        testBalance();
-        System.out.println("start add test");
-        realGroups.add("192.168.0.1:111");
-        realGroups.add("192.168.0.221:111");
-        testBalance();
+
+        Function<String, String> cmp = tInvoker -> tInvoker;
+        System.out.println(cmp.apply("test"));
+
+        List<String> temp = Lists.newArrayList();
+        temp.add("1");
+        temp.add("2");
+        temp.add("3");
+        temp.sort(Comparator.comparing(cmp));
+        System.out.println(temp);
+
+//        Long startTime = System.currentTimeMillis();
+//        testBalance();
+//        System.out.println(System.currentTimeMillis() - startTime);
+
+
+
+//        System.out.println("start remove test");
+//        realGroups.remove("192.168.0.1:111");
+//        testBalance();
+//        System.out.println("start add test");
+//        realGroups.add("192.168.0.1:111");
+//        realGroups.add("192.168.0.221:111");
+//        testBalance();
     }
 
     private static void testBalance() {

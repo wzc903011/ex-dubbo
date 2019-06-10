@@ -1,5 +1,8 @@
 package com.mingqi.local.userservice.cache;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CacheDemoTest {
 
     protected static final String USER_PORTRAIT = "up:";

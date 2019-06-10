@@ -10,20 +10,35 @@
     <!-- 声明需要暴露的服务接口 -->
     <dubbo:service interface="com.mingqi.local.userservice.UserQueryRemoteService" ref="userQueryRemoteService">
         <dubbo:method name="queryWithPrimitiveType" loadbalance="uid">
-            <dubbo:parameter key="hash.nodes" value="10" />
-            <dubbo:parameter key="uid.arguments" value="0"/>
+            <dubbo:parameter key="uid.argument" value="0"/>
         </dubbo:method>
         <dubbo:method name="queryWithPrimitiveType2" loadbalance="uid">
-            <dubbo:parameter key="uid.arguments" value="1"/>
+            <dubbo:parameter key="uid.argument" value="1"/>
         </dubbo:method>
         <dubbo:method name="queryByUidRequest" loadbalance="uid">
-            <dubbo:parameter key="hash.nodes" value="10" />
+            <dubbo:parameter key="uid.argument" value="0"/>
         </dubbo:method>
         <dubbo:method name="queryBySonUidRequest" loadbalance="uid">
-            <dubbo:parameter key="hash.nodes" value="10" />
+            <dubbo:parameter key="uid.argument" value="0"/>
         </dubbo:method>
         <dubbo:method name="queryByOtherRequest" loadbalance="uid">
-            <dubbo:parameter key="hash.nodes" value="10" />
+            <dubbo:parameter key="uid.argument" value="0"/>
         </dubbo:method>
+
+<!--        <dubbo:method name="queryWithPrimitiveType">-->
+<!--            <dubbo:parameter key="uid.argument" value="0"/>-->
+<!--        </dubbo:method>-->
+<!--        <dubbo:method name="queryWithPrimitiveType2">-->
+<!--            <dubbo:parameter key="uid.argument" value="1"/>-->
+<!--        </dubbo:method>-->
+<!--        <dubbo:method name="queryByUidRequest">-->
+<!--            <dubbo:parameter key="uid.argument" value="0"/>-->
+<!--        </dubbo:method>-->
+<!--        <dubbo:method name="queryBySonUidRequest">-->
+<!--            <dubbo:parameter key="uid.argument" value="0"/>-->
+<!--        </dubbo:method>-->
+<!--        <dubbo:method name="queryByOtherRequest">-->
+<!--            <dubbo:parameter key="uid.argument" value="0"/>-->
+<!--        </dubbo:method>-->
     </dubbo:service>
 </beans>

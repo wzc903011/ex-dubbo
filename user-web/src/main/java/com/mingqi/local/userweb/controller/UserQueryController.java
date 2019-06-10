@@ -11,6 +11,10 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 @RestController
 public class UserQueryController {
@@ -18,6 +22,8 @@ public class UserQueryController {
     private static int invoke_count = 0;
     @Resource
     private UserQueryRemoteService userQueryRemoteService;
+
+    private static ExecutorService exec = Executors.newFixedThreadPool(100);
 
     @RequestMapping("/promitivetypeuid1")
     public String index() {
@@ -29,9 +35,17 @@ public class UserQueryController {
 
     @RequestMapping("/promitivetypeuid2")
     public String queryByRequest() {
-        invoke_count++;
         Random random = new Random();
-        userQueryRemoteService.queryWithPrimitiveType2(random.nextInt(100), invoke_count%10);
+        for (int i = 0; i < 100; i++) {
+            invoke_count++;
+            exec.submit(new FutureTask<Void>(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    userQueryRemoteService.queryWithPrimitiveType2(random.nextInt(100), invoke_count%10);
+                    return null;
+                }
+            }));
+        }
         return "hello";
     }
 
