@@ -4,12 +4,9 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.rpc.*;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
-import com.alibaba.dubbo.rpc.cluster.loadbalance.ConsistentHashLoadBalance;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.RandomLoadBalance;
 import com.alibaba.dubbo.rpc.support.RpcUtils;
 import com.mingqi.local.userservice.dto.UidQueryRequest;
-import com.yiran.arch.leo.util.LeoUtils;
-import org.assertj.core.util.Lists;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -18,15 +15,12 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 参考  com.alibaba.dubbo.rpc.cluster.loadbalance.ConsistentHashLoadBalance
- * todo 问题：如何保证均匀==即==》预生成的virtualInvokers如何保证和请求的参数生成的key均匀；
- * 待学习：一致性hash算法里 node和真实结点的关系；  考虑缩容 扩容
- * 虚拟节点初始化：
- * 每个method都会初始化virtualInvokers，都是（replicaNumber/4）* 4个key
+ * cas来解决并发问题的代码先注释了
  */
 public class UidLoadBalance extends AbstractLoadBalance {
 
     private static int DEFAULT_REPLICANUMBER = 10000;
+    private static int multThreadCostMultiCreation = 0;
 
     private static RandomLoadBalance randomLoadBalance = new RandomLoadBalance();
     private static AtomicBoolean atomicBoolean = new AtomicBoolean(false);
@@ -45,12 +39,6 @@ public class UidLoadBalance extends AbstractLoadBalance {
     @SuppressWarnings("unchecked")
     @Override
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
-        Boolean uidLbSwitch = LeoUtils.getBooleanProperty("cicero-api.loadbalance.uidconsistenthash.switch");
-
-        //uid路由开关，如遇到负载不均衡的情况，可以直接关闭，使用dubbo默认负载均衡
-        if (!uidLbSwitch) {
-            return randomLoadBalance.select(invokers, url, invocation);
-        }
         String methodName = RpcUtils.getMethodName(invocation);
         String key = invokers.get(0).getUrl().getServiceKey() + "." + methodName;
         //扩容、缩容后刷新虚拟节点
@@ -83,7 +71,6 @@ public class UidLoadBalance extends AbstractLoadBalance {
             selectors.put(key, new ConsistentHashSelector<T>(invokers, methodName));
             selector = (ConsistentHashSelector<T>) selectors.get(key);
         }
-        System.out.println("使用初始化完成的map");
         return selector.select(invocation);
     }
 
@@ -96,7 +83,7 @@ public class UidLoadBalance extends AbstractLoadBalance {
         private final int argumentIndex;
 
         public ConsistentHashSelector(List<Invoker<T>> invokers, String methodName) {
-            System.out.println("初始化1次 线程：" + Thread.currentThread().getName());
+            System.out.println("初始化" + multThreadCostMultiCreation++ + "次 线程：" + Thread.currentThread().getName());
             this.virtualInvokers = new TreeMap<>();
             this.identityHashCode = System.identityHashCode(invokers);
             URL url = invokers.get(0).getUrl();
@@ -146,11 +133,6 @@ public class UidLoadBalance extends AbstractLoadBalance {
         }
 
         private String toKey(Object[] args) {
-            String hashKey = RpcContext.getContext()
-                    .getAttachments().remove(Constants.LB_HASH_KEY);
-            if (hashKey != null) {
-                return hashKey;
-            }
             StringBuilder buf = new StringBuilder();
 
             if (argumentIndex >= 0 && argumentIndex < args.length) {
@@ -194,46 +176,6 @@ public class UidLoadBalance extends AbstractLoadBalance {
             }
             md5.update(bytes);
             return md5.digest();
-        }
-    }
-
-    private static final ConcurrentMap<String, String> selectors_test = new ConcurrentHashMap<String, String>();
-
-    public static void main(String[] args) throws InterruptedException {
-        ExecutorService exec = Executors.newFixedThreadPool(100);
-        for (int i = 0; i < 1000; i++) {
-            Thread.sleep(10);
-            if (i % 200 == 0 && i != 0) {
-                selectors_test.clear();
-            }
-            exec.submit(new FutureTask<Void>(new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    test();
-                    return null;
-                }
-            }));
-        }
-        exec.shutdown();
-    }
-
-    private static void test() throws InterruptedException {
-        boolean condition = selectors_test.get("testKey") == null;
-
-        if (condition) {
-            if (atomicBoolean.compareAndSet(false, true)) {
-                Thread t = Thread.currentThread();
-                System.out.println("new:---------------------" + t.getName());
-                t.sleep(1000);
-                selectors_test.put("testKey", "value");
-                System.out.println("new: =============> done" + t.getName());
-                atomicBoolean.compareAndSet(true, false);
-            } else {
-                Thread t = Thread.currentThread();
-                System.out.println("old " + t.getName());
-            }
-        } else {
-            System.out.println("get result");
         }
     }
 }

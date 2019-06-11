@@ -4,41 +4,14 @@
        xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
        xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://code.alibabatech.com/schema/dubbo        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
-    <!-- 用dubbo协议在随机端口暴露服务 -->
-    <dubbo:protocol name="dubbo"/>
+    <dubbo:application name="demo-provider"/>
+    <dubbo:protocol name="dubbo" port="-1"/>
+    <dubbo:registry protocol="zookeeper" address="127.0.0.1:2181"/>
 
     <!-- 声明需要暴露的服务接口 -->
     <dubbo:service interface="com.mingqi.local.userservice.UserQueryRemoteService" ref="userQueryRemoteService">
-        <dubbo:method name="queryWithPrimitiveType" loadbalance="uid">
-            <dubbo:parameter key="uid.argument" value="0"/>
-        </dubbo:method>
-        <dubbo:method name="queryWithPrimitiveType2" loadbalance="uid">
-            <dubbo:parameter key="uid.argument" value="1"/>
-        </dubbo:method>
         <dubbo:method name="queryByUidRequest" loadbalance="uid">
             <dubbo:parameter key="uid.argument" value="0"/>
         </dubbo:method>
-        <dubbo:method name="queryBySonUidRequest" loadbalance="uid">
-            <dubbo:parameter key="uid.argument" value="0"/>
-        </dubbo:method>
-        <dubbo:method name="queryByOtherRequest" loadbalance="uid">
-            <dubbo:parameter key="uid.argument" value="0"/>
-        </dubbo:method>
-
-<!--        <dubbo:method name="queryWithPrimitiveType">-->
-<!--            <dubbo:parameter key="uid.argument" value="0"/>-->
-<!--        </dubbo:method>-->
-<!--        <dubbo:method name="queryWithPrimitiveType2">-->
-<!--            <dubbo:parameter key="uid.argument" value="1"/>-->
-<!--        </dubbo:method>-->
-<!--        <dubbo:method name="queryByUidRequest">-->
-<!--            <dubbo:parameter key="uid.argument" value="0"/>-->
-<!--        </dubbo:method>-->
-<!--        <dubbo:method name="queryBySonUidRequest">-->
-<!--            <dubbo:parameter key="uid.argument" value="0"/>-->
-<!--        </dubbo:method>-->
-<!--        <dubbo:method name="queryByOtherRequest">-->
-<!--            <dubbo:parameter key="uid.argument" value="0"/>-->
-<!--        </dubbo:method>-->
     </dubbo:service>
 </beans>
