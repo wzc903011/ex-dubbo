@@ -5,8 +5,12 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ex-dubbo.main" target="1.8" />
-      <module name="ex-dubbo.test" target="1.8" />
+      <module name="exp-dubbo.main" target="1.8" />
+      <module name="exp-dubbo.test" target="1.8" />
+      <module name="exp-dubbo.user-service.main" target="1.8" />
+      <module name="exp-dubbo.user-service.test" target="1.8" />
+      <module name="exp-dubbo.user-web.main" target="1.8" />
+      <module name="exp-dubbo.user-web.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
