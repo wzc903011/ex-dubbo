@@ -3,6 +3,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'exp-dubbo'
+rootProject.name = 'ex-dubbo'
 include 'user-service'
 include 'user-web'

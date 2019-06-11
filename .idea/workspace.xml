@@ -1,49 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="18b1f5a1-dfde-40c1-b4a3-dcdbc6233ba7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/META-INF/exp-dubbo.user-service.main.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/UserQueryRemoteService.class" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/UserQueryRemoteService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/cache/CacheDemoTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/cache/CaffeineDemoTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/cache/CaffeineSwitchBean.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/cache/GuavaCacheDemoTest$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/cache/GuavaCacheDemoTest$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/cache/GuavaCacheDemoTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dto/GroupUserInfo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dto/UidListQueryRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dto/UidQueryExtendRequest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dubbo/UidAsVirtualKeyLB.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dubbo/UidLoadBalance$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dubbo/UidLoadBalance$ConsistentHashSelector.class" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dubbo/UidLoadBalance$ConsistentHashSelector.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dubbo/UidLoadBalance.class" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dubbo/UidLoadBalance.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/dubbo/UidModLoadBalance.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/gc/GCDemoTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/remote/UserQueryRemoteServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/out/production/classes/com/mingqi/local/userservice/remote/UserQueryRemoteServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/out/production/resources/config/spring/appcontext-provider.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/out/production/resources/config/spring/appcontext-provider.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/UserQueryRemoteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/UserQueryRemoteService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/cache/CacheDemoTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/cache/CaffeineDemoTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/cache/CaffeineSwitchBean.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/cache/GuavaCacheDemoTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dto/GroupUserInfo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dto/UidListQueryRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dto/UidQueryExtendRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dubbo/UidAsVirtualKeyLB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dubbo/UidLoadBalance.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dubbo/UidLoadBalance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dubbo/UidModLoadBalance.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/gc/GCDemoTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/remote/UserQueryRemoteServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/remote/UserQueryRemoteServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/config/spring/appcontext-provider.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/config/spring/appcontext-provider.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-web/out/production/classes/com/mingqi/local/userweb/controller/UserQueryController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/user-web/out/production/classes/com/mingqi/local/userweb/controller/UserQueryController$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-web/out/production/classes/com/mingqi/local/userweb/controller/UserQueryController.class" beforeDir="false" afterPath="$PROJECT_DIR$/user-web/out/production/classes/com/mingqi/local/userweb/controller/UserQueryController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-web/out/production/resources/config/spring/appcontext-consumer.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-web/out/production/resources/config/spring/appcontext-consumer.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-web/src/main/java/com/mingqi/local/userweb/controller/UserQueryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-web/src/main/java/com/mingqi/local/userweb/controller/UserQueryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-web/src/main/resources/config/spring/appcontext-consumer.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-web/src/main/resources/config/spring/appcontext-consumer.xml" afterDir="false" />
-    </list>
+    <list default="true" id="18b1f5a1-dfde-40c1-b4a3-dcdbc6233ba7" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -133,7 +91,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dubbo/UidLoadBalance.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="147">
@@ -141,6 +99,15 @@
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/settings.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -205,7 +172,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/settings.gradle" />
         <option value="$PROJECT_DIR$/user-service/src/test/java/com/mingqi/local/userservice/UserServiceApplicationTests.java" />
         <option value="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dto/GroupUserInfo.java" />
         <option value="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/caffeine/DemoTest.java" />
@@ -227,6 +193,7 @@
         <option value="$PROJECT_DIR$/user-web/src/main/resources/config/spring/appcontext-consumer.xml" />
         <option value="$PROJECT_DIR$/user-service/src/main/resources/config/spring/appcontext-provider.xml" />
         <option value="$PROJECT_DIR$/user-service/src/main/java/com/mingqi/local/userservice/dubbo/UidLoadBalance.java" />
+        <option value="$PROJECT_DIR$/settings.gradle" />
       </list>
     </option>
   </component>
@@ -676,18 +643,18 @@
       <workItem from="1560236789037" duration="605000" />
       <workItem from="1560237520900" duration="752000" />
       <workItem from="1560238412082" duration="1548000" />
-      <workItem from="1560240001968" duration="2801000" />
+      <workItem from="1560240001968" duration="3052000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="87986000" />
+    <option name="totallyTimeSpent" value="88237000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="805" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2360515" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2360515" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -698,13 +665,13 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32819074" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.55820477" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.44319776" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.44319776" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Build" order="7" weight="0.32907802" />
       <window_info anchor="bottom" id="Spring" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.5175316" />
+      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.5175316" />
       <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="bottom" id="Java Enterprise" order="12" />
@@ -1071,13 +1038,6 @@
     <entry file="file://$PROJECT_DIR$/user-web/src/main/resources/application.properties">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/settings.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="18" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-autoconfigure/2.1.5.RELEASE/95789d4de06a4c37eebb1f6ce7bc7290951d60c7/spring-boot-autoconfigure-2.1.5.RELEASE-sources.jar!/org/springframework/boot/autoconfigure/jdbc/DataSourceProperties.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -1194,6 +1154,13 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
         </state>
       </provider>
     </entry>
