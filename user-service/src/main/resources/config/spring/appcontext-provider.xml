@@ -10,8 +10,6 @@
 
     <!-- 声明需要暴露的服务接口 -->
     <dubbo:service interface="com.mingqi.local.userservice.UserQueryRemoteService" ref="userQueryRemoteService">
-        <dubbo:method name="queryByUidRequest" loadbalance="uid">
-            <dubbo:parameter key="uid.argument" value="0"/>
-        </dubbo:method>
+        <dubbo:method name="queryByUidRequest" />
     </dubbo:service>
 </beans>
