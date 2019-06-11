@@ -8,10 +8,6 @@ buildscript {
 
     repositories {
         mavenLocal()
-        maven { url "http://maven-pdd.corp.yiran.com/repository/maven-releases/" }
-        maven { url "http://maven-pdd.corp.yiran.com/repository/maven-snapshots/" }
-        maven { url "http://maven-pdd.corp.yiran.com/repository/maven-central/" }
-        maven { url "http://maven-pdd.corp.yiran.com/repository/releases/" }
         maven { url 'https://repo.spring.io/milestone' }
         jcenter()
     }
@@ -26,12 +22,9 @@ group = 'com.mingqi.local'
 version = '0.0.1-SNAPSHOT'
 
 ext {
-    frameworkParentVersion = '1.2.0.RELEASE'
     springBootVersion = '2.1.5.RELEASE'
-    log4jVersion = '2.11.0-p1.0.0'
-    junitVersion = '4.11'
+    log4jVersion = '2.11.0'
     springVersion = '5.1.7.RELEASE'
-//    catDubboFilterVersion = '1.0.8'  // framework里没有catDubboFilter
     zookeeperVersion='3.4.10'
     projectVersion='0.0.1-SNAPSHOT'
 }
@@ -84,15 +77,12 @@ allprojects {
     }
 
     repositories {
-        maven { url "http://st1-publish-1.prod.yiran.com:8081/repository/maven-public/"}
-        maven { url "http://maven-pdd.corp.yiran.com:8081/repository/maven-public/" }
         //下载gradle的官方插件
         maven { url "https://plugins.gradle.org/m2/" }
     }
 
     dependencyManagement {
         imports {
-            mavenBom "com.pinduoduo.framework:framework-parent:$frameworkParentVersion"
         }
     }
 
