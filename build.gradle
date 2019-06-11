@@ -56,7 +56,21 @@ allprojects {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                from components.java
+                from components.java  // 打jar包  指定了sourceSets 会把resource文件也打进jar包
+            }
+        }
+    }
+
+    //指定resources路径
+    sourceSets {
+        main {
+            resources {
+                srcDirs = ["src/main/resources"]
+            }
+        }
+        test {
+            resources {
+                srcDirs = ["src/test/resources"]
             }
         }
     }
@@ -115,6 +129,7 @@ project(":user-service") {
         //zookeeper
         compile "org.apache.zookeeper:zookeeper:$zookeeperVersion"
         compile 'com.github.ben-manes.caffeine:caffeine:2.5.5'
+        compile "com.pdd.service:cicero-contract:0.0.26-SNAPSHOT"
     }
 }
 
